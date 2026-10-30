@@ -1,0 +1,84 @@
+{
+  "3b5e480e53f8cb288d275fb31b90a227aed41642a1e036b577245b234f83bca4": [
+    "baseline",
+    "joint_pose_v1"
+  ],
+  "7e6d78b356c86b1209aaec7dc92a0445f312b30f99dc4e3f8e9fea8cb0321537": [
+    "baseline",
+    "joint_pose_v1",
+    "swept_v2",
+    "joint_pose_swept_v2"
+  ],
+  "6eeee8cfa5d688917b066117d037e207a0207fda6afd30db9e20eac3b827aac9": [
+    "baseline",
+    "joint_pose_v1",
+    "swept_v2",
+    "joint_pose_swept_v2",
+    "joint_pose_ee_v3",
+    "joint_pose_swept_ee_v3"
+  ],
+  "f107f4825622e1aa26e3a29510e874696e8d7d6df91dff58227d5edf3b59a095": [
+    "baseline",
+    "joint_pose_v1",
+    "swept_v2",
+    "joint_pose_swept_v2",
+    "joint_pose_ee_v3",
+    "joint_pose_swept_ee_v3",
+    "joint_pose_adaptive_v4",
+    "joint_pose_ee_adaptive_v4"
+  ],
+  "bbb6aee175db398a87194e73d39cb3f0b6b26833f3d80f69bdb1a70904274d9c": [
+    "baseline",
+    "joint_pose_v1",
+    "swept_v2",
+    "joint_pose_swept_v2",
+    "joint_pose_ee_v3",
+    "joint_pose_swept_ee_v3",
+    "joint_pose_adaptive_v4",
+    "joint_pose_ee_adaptive_v4",
+    "joint_pose_hitbalanced_v5",
+    "joint_pose_ee_hitbalanced_v5"
+  ],
+  "8fdc34beda037a038a33361b911a7e46b434a5f3eaef58b94490c7550e62a4c9": [
+    "baseline",
+    "joint_pose_v1",
+    "swept_v2",
+    "joint_pose_swept_v2",
+    "joint_pose_ee_v3",
+    "joint_pose_swept_ee_v3",
+    "joint_pose_adaptive_v4",
+    "joint_pose_ee_adaptive_v4",
+    "joint_pose_hitbalanced_v5",
+    "joint_pose_ee_hitbalanced_v5",
+    "joint_pose_ee_hitbalanced_adaptive_v4"
+  ],
+  "01043415e99ad36a03db8d777f3b4d671201ec3c3e168f3b8147896c390eb65c": [
+    "baseline",
+    "joint_pose_v1",
+    "swept_v2",
+    "joint_pose_swept_v2",
+    "joint_pose_ee_v3",
+    "joint_pose_swept_ee_v3",
+    "joint_pose_adaptive_v4",
+    "joint_pose_ee_adaptive_v4",
+    "joint_pose_hitbalanced_v5",
+    "joint_pose_ee_hitbalanced_v5",
+    "joint_pose_ee_hitbalanced_adaptive_v4",
+    "joint_pose_ee_hitbalanced_nonracket_adaptive_v4"
+  ],
+  "aaa050a1f2a0806d562f990fbc1e00a7f1a7e18e55dda1615971f141daf80843": [
+    "baseline",
+    "joint_pose_v1",
+    "swept_v2",
+    "joint_pose_swept_v2",
+    "joint_pose_ee_v3",
+    "joint_pose_swept_ee_v3",
+    "joint_pose_adaptive_v4",
+    "joint_pose_ee_adaptive_v4",
+    "joint_pose_hitbalanced_v5",
+    "joint_pose_ee_hitbalanced_v5",
+    "joint_pose_ee_hitbalanced_adaptive_v4",
+    "joint_pose_ee_hitbalanced_nonracket_adaptive_v4",
+    "joint_pose_ee_hitbalanced_nonracket_rootvel_adaptive_v4"
+  ]
+}

@@ -1,0 +1,4 @@
+# Keep exact bytes: training resume scopes hash some source files.
+* text=auto eol=lf
+*.png binary
+*.jpg binary

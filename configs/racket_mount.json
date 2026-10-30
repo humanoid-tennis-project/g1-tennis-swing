@@ -1,0 +1,41 @@
+{
+  "geometry_source": "AdaPT/src/mjlab/asset_zoo/robots/unitree_g1/xmls/g1_rightracket.xml",
+  "parent_body": "right_wrist_yaw_link",
+  "visual_mesh": "23_25deg",
+  "visual_geom_translation_m": [
+    0.3252845335563407,
+    -0.003186174370951272,
+    0.09779125897804179
+  ],
+  "visual_geom_quaternion_wxyz": [
+    0.5877079234876128,
+    0.3917599880202659,
+    0.3925573804289756,
+    0.5890859118388274
+  ],
+  "center_in_wrist_frame_m": [
+    0.4367835,
+    -0.003,
+    0.145
+  ],
+  "collision_proxy": {
+    "type": "cylinder",
+    "position_m": [
+      0.4367835,
+      -0.003,
+      0.145
+    ],
+    "quaternion_wxyz": [
+      0.0,
+      0.0,
+      -0.7071067811865476,
+      0.7071067811865476
+    ],
+    "radius_m": 0.15,
+    "half_thickness_m": 0.02
+  },
+  "connection": "Fixed to wrist body; no extra racket joint",
+  "measured_racket_pose": false,
+  "physics_stepped": false,
+  "target_model_sha256": "eca944baf433bdca6c562fafb0ab2c85f72cfef8ba5becd111ec08f9d2bc9682"
+}

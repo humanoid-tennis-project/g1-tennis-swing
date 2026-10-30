@@ -1,0 +1,25 @@
+# Never commit data, models, media or local environments.
+__pycache__/
+*.py[cod]
+.cache/
+.venv/
+upstream/
+runs/
+data/
+*.pt
+*.pth
+*.ckpt
+*.npz
+*.npy
+*.pkl
+*.mp4
+*.avi
+*.mov
+*.log
+*.jsonl
+tensorboard/
+events.out.tfevents.*
+# Credentials / cloud state (not used by this repository, kept as a guard)
+.env
+*.token
+.modal.toml

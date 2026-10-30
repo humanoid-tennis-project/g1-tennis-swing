@@ -1,0 +1,46 @@
+{
+  "format": "stage1_experiment_lineage_v1",
+  "note": "Configuration lineage of the Stage 1 rally policy (474 references, shared policy). Metrics are copied from the internal experiment log for orientation only; the matched-condition sets differ between rows, so rows are not directly comparable. Final numbers belong in the report.",
+  "common": {
+    "task": "Mjlab-ServeTracking-Flat-Unitree-G1-Stage1-RandomDt (AdaPT/mjlab registry), re-configured by src/impact_stage1/task.py",
+    "skill_group": "rally",
+    "references": 474,
+    "evaluation": {
+      "fixed20": "clips 3,262,4,234,0,184,50,361,309,305 x start times 0 / 0.04 s",
+      "all948": "all 474 references x start times 0 / 0.04 s, nominal goals, seed 100",
+      "metrics": "completion (no early termination), reaching the hit-centre time, racket-centre position/velocity/face-normal error at the hit centre"
+    },
+    "actor": "Encoder 160 -> 512/256/128 -> tanh(z8); Decoder (87 proprioception + z8) -> 512/256/128 -> 27 joint targets",
+    "critic": "MLP, 286 inputs (276 privileged + 10 goal)",
+    "ppo": "RSL-RL 5.0.1 PPO, unchanged except the actor mean network",
+    "num_envs_local": 2048,
+    "goals": "--randomized-goals (position +-(5,5,2.5) cm, speed x0.9-1.1, normal +-10 deg)"
+  },
+  "steps": [
+    {"id": "base", "variant": "baseline", "updates_total": 6348, "where": "cloud GPU", "summary": "Stage 1 joint Encoder/Decoder PPO on 474 rally references"},
+    {"id": "H1", "variant": "joint_pose_v1", "parent_update": 6348, "updates": 1103, "adopted": true,
+     "change": "all-27-joint angle tracking term outside the hit window (paper App. A.2 joint positions)",
+     "recorded": {"all948_completed": 576}},
+    {"id": "H2", "variant": "joint_pose_swept_v2", "parent_update": 7451, "updates": 900, "adopted": false,
+     "change": "phase-consistent (swept) hit position target", "recorded": {"fixed20_matched_position_cm": [37.64, 39.22]}},
+    {"id": "H3", "variant": "joint_pose_ee_v3", "parent_update": 7451, "updates": 1200, "adopted": true,
+     "change": "hands/feet end-effector position term (DeepMimic-style)", "recorded": {"all948_completed": 597}},
+    {"id": "H4", "variant": "joint_pose_ee_hitbalanced_v5", "parent_update": 8651, "updates": 600, "adopted": true,
+     "change": "T/H re-weighting of the 5-frame hit-window rewards",
+     "recorded": {"all948_completed": 588, "matched690_position_cm": [56.99, 55.45]}},
+    {"id": "H5", "variant": "joint_pose_ee_hitbalanced_adaptive_v4", "parent_update": 9251, "updates": 900, "adopted": true,
+     "change": "error-EMA adaptive reward kernel widths (KungfuBot-style)",
+     "recorded": {"all948_completed": 600, "matched694_position_cm": [55.53, 53.52]}},
+    {"id": "H6", "variant": "joint_pose_ee_hitbalanced_nonracket_adaptive_v4", "parent_update": 10151, "updates": 600, "adopted": true,
+     "change": "non-racket shoulder/elbow tracking term; A/B against unchanged continuation",
+     "recorded": {"all948_completed_A_B": [599, 611], "matched697_position_cm_A_B": [52.733, 52.8]}},
+    {"id": "H7", "variant": "joint_pose_ee_hitbalanced_nonracket_adaptive_v4", "parent_update": 10751, "updates": 1200, "adopted": false,
+     "change": "none (longer training control)", "recorded": {"all948_completed": 605, "position_cm": 51.9, "face_deg": 20.9}},
+    {"id": "H8", "variant": "joint_pose_ee_hitbalanced_nonracket_rootvel_adaptive_v4", "parent_update": 10751, "updates": 1200, "adopted": false,
+     "change": "pelvis linear-velocity tracking term outside the hit window", "recorded": {"all948_completed": 603, "position_cm": 51.94}},
+    {"id": "H9", "variant": "joint_pose_ee_hitbalanced_nonracket_rootvel_adaptive_v4", "parent_update": 11951, "updates": 1200, "adopted": null,
+     "change": "same task, references replaced by stance-foot-locked copies (src/build_foot_locked_references.py, ankle z < 0.20 m)",
+     "train_flags": ["--fork-parent-scope", "--foot-lock-data-fork"],
+     "recorded": {"zero_update_probe_position_cm": [52.4, 40.5], "status": "running at the time of this snapshot"}}
+  ]
+}
