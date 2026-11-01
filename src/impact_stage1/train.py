@@ -29,6 +29,8 @@ def main():
                    help='Explicit same-checkpoint cloud/local physical comparison; local-only transition.')
     p.add_argument('--cross-runtime-continuation-proof',type=Path,
                    help='Separate tested runtime-transfer experiment; final cloud validation required.')
+    p.add_argument('--min-action-std',type=float,default=None,
+                   help='Lower bound on the Gaussian action std, applied after resume and after every update.')
     p.add_argument('--foot-lock-data-fork',action='store_true',
                    help='Branch onto stance-foot-locked copies of exactly the parent references.')
     p.add_argument('--skill-group', choices=('rally', 'serve'), default='rally',
@@ -142,6 +144,13 @@ def main():
                 physics_and_rollout_restored=False,reward_variant=a.reward_variant,
                 parent_scope_fork=bool(allowed_fork)))
             del source
+        def floor_std():
+            # A tiny std makes the KL trust region admit only tiny mean changes; keep exploration alive.
+            with torch.no_grad():runner.alg.actor.distribution.std_param.clamp_(min=a.min_action_std)
+        if a.min_action_std is not None:
+            floor_std()
+            write_json(a.output/'action_std_floor.json',dict(min_action_std=a.min_action_std,
+                std_after_floor=runner.alg.actor.distribution.std_param.detach().cpu().tolist()))
         from shared_ppo_monitoring import attach_monitoring
         attach_monitoring(runner, wrapped, a.output, a.resume)
         monitored_save = runner.save
@@ -162,6 +171,8 @@ def main():
             if record_diagnostic:
                 diagnostics.update(rollout_diagnostics(runner.alg))
             losses = original_update()
+            if a.min_action_std is not None:
+                floor_std()
             if record_diagnostic:
                 post=rollout_diagnostics(runner.alg)
                 diagnostics.update({f'post_update_{k}':post[k] for k in ('kl','clip_fraction')})

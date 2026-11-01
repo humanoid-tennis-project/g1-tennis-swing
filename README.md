@@ -1,8 +1,11 @@
 # Tennis video to humanoid swings (Unitree G1, simulation)
 
-Code for a course project: a simulated Unitree G1 humanoid learns human-like
-tennis swings from monocular match video, and a shared low-level policy learns
-to hit a requested racket state (position, velocity, face normal) at a given time.
+Code for a course project: a simulated Unitree G1 humanoid learns tennis swings
+from human references built from public practice video (CalTennis, one camera per clip),
+with a shared low-level policy that is asked to reach a requested racket state
+(position, velocity, face normal) at a given hit time.
+
+Video: (YouTube URL) / Report: see the course submission / Data: (Hugging Face URLs)
 
 - **Simulator / RL**: MuJoCo (mujoco-warp) through AdaPT/mjlab, PPO from RSL-RL.
 - **References**: CalTennis video -> GVHMR (human 3D motion) -> GMR retargeting to G1
@@ -37,7 +40,9 @@ CalTennis video (30 Hz)
 
 `scripts/run_followup_local.py` chains control evaluation, one bounded training
 continuation, restore verification, and paired evaluations. The configuration
-history of the improvement steps H1-H9 is in `configs/experiment_lineage.json`.
+history of the improvement steps H1-H9 is in `configs/experiment_lineage.json`; the final
+policy adds an action-std floor of 0.1 (`--min-action-std 0.1`, H10) and continues with the same
+settings to 16,611 updates (H11). `analysis/` holds the scripts behind the reported numbers.
 
 ### Stage 1 model
 
@@ -106,13 +111,36 @@ test needs the AdaPT environment) and `python -m unittest discover tests` with
 
 ## Results
 
-_Placeholder - to be filled in from the final evaluation (all 474 references x 2
-start times, nominal goals): completion rate, hit-centre reach, racket position /
-velocity / face error, and the YouTube video link._
+Final policy, 474 training references x 2 start times (0 s, 0.04 s) = 948 trials, nominal goals,
+no observation or physics noise. The evaluation uses the training references (no held-out motions).
+
+| Measure | Value |
+|---|---:|
+| Trials still running at the hit time | 735 / 948 (350 references from both starts) |
+| Trials running to the end | 636 / 948 |
+| Racket centre to target at the hit, median / mean (735 trials) | 32.0 cm / 35.6 cm |
+| Same, with the root aligned to the reference | 25.6 cm (median) |
+| Within 15 cm (racket face radius) | 76 / 948 |
+| Racket speed at the hit, robot / reference (median) | 5.7 / 7.1 m/s |
+| Joint-angle error at the hit (median) | 19.4 deg |
+
+The policy does **not** follow the racket target yet. With the training-time goal randomisation at
+evaluation, the slope of racket shift on goal shift is 0.12 (position), 0.01 (velocity) and 0.05
+(face normal); assuming the racket ignores the target gives a median error of 32.6 cm vs 32.3 cm
+observed. Tripling the randomisation range gives the same slopes. The policy replays the references.
+
+Hit-time labels: two policies trained from scratch for 3,000 updates (one seed each) differ only in
+annotated vs automatic (peak racket speed) hit times. On 458 paired trials the racket's closest approach
+falls within +-0.04 s of the annotated contact in 73.4% vs 65.9% (+7.4 points, 95% bootstrap interval
+over references +2.6 to +12.5); no difference in position error was detected. Seed-to-seed variation is
+not measured, so this is preliminary.
 
 ## Limitations
 
 - Simulation only; no sim-to-real transfer, no ball, no ball-contact physics, no rally.
+- The policy does not follow the racket target (see Results); outside the hit window the reward pays for
+  tracking the unshifted reference, which may make ignoring the target the better choice (not verified).
+- Evaluated on the training references only; one training seed per policy.
 - Racket pose is a rigid attachment to the wrist, not measured from video.
 - Hit times are manual annotations (part visible contact, part estimated from the
   swing; uncertainty up to 0.5 s is admitted for training).
@@ -132,9 +160,10 @@ derived from them keep their own terms; see `THIRD_PARTY_NOTICES.md`.
 
 ## 日本語概要
 
-単眼のテニス試合映像（CalTennis）から人体動作をGVHMRで推定し、GMRでUnitree G1（27関節・50Hz）へ変換した参照474本を使い、MuJoCo/mjlab上でRSL-RLのPPOにより人らしいスイングを学習するコードです。下位方策は Humanoid Badminton（arXiv 2609.31840）のStage 1を参考にした独自実装で、指定した時刻にラケットの位置・速度・面の向きを実現するよう、Encoder（z8）とDecoderを共同学習します。
+公開データセット CalTennis のテニス練習の動画（1本ごとに1台のカメラ）から人体動作をGVHMRで推定し、GMRでUnitree G1（27関節・50Hz）へ変換した参照474本を使い、MuJoCo/mjlab上でRSL-RLのPPOにより人らしいスイングを学習するコードです。下位方策は Humanoid Badminton（arXiv 2609.31840）のStage 1を参考にした独自実装で、指定した時刻にラケットの位置・速度・面の向きを実現するよう、Encoder（z8）とDecoderを共同学習します。
 
 - 再現手順は上の「How to reproduce」を参照。上流コード・データ・重みは同梱していません。
 - 球・接触物理・上位方策・ラリーは未実装。ラケット姿勢は手首への剛体固定から計算した推定値です。
 - 打撃時刻は手作業の注釈（一部はスイングからの推定）です。
-- 改善の経緯（H1〜H9）は `configs/experiment_lineage.json`。結果は最終評価後に記入します。
+- 改善の経緯（H1〜H9）は `configs/experiment_lineage.json`。最終の方策は行動の標準偏差に下限0.1を付け（H10）、設定を変えずに16,611更新まで学習した（H11）。
+- 結果（948試行）：打撃時刻まで続いた 735、打撃時刻のラケット位置の誤差は中央値 32.0 cm、15 cm 以内は 76。ラケット目標をずらしてもほぼ追従しない（位置の傾き 0.12）。今の方策は手本をなぞっている。
