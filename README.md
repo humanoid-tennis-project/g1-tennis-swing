@@ -5,7 +5,8 @@ from human references built from public practice video (CalTennis, one camera pe
 with a shared low-level policy that is asked to reach a requested racket state
 (position, velocity, face normal) at a given hit time.
 
-Video: (YouTube URL) / Report: see the course submission / Data: (Hugging Face URLs)
+Video: (YouTube URL) / Report: see the course submission
+Data: [G1 references](https://huggingface.co/datasets/nosuke113/caltennis-g1-hitting-references) · [human 3D joints](https://huggingface.co/datasets/nosuke113/caltennis-human-stroke-joints) (CC BY-NC 4.0)
 
 - **Simulator / RL**: MuJoCo (mujoco-warp) through AdaPT/mjlab, PPO from RSL-RL.
 - **References**: CalTennis video -> GVHMR (human 3D motion) -> GMR retargeting to G1
